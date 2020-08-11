@@ -18,6 +18,9 @@ public:
         int n;
         vector<vector<int> > ijk;
     };
+
+    vector<Pose> ligand_slots;
+    vector<double> ligand_energies;
     vector<int> ligand_types;
     vector<vector<int> > lattice;
     double epsilon;
@@ -31,6 +34,7 @@ public:
     vector<coord> find_contacts(int i, int j);
     bool is_occupied(int i, int j);
     double score_pair(Pose binding_pose);
+    double score_pair(Pose* binding_pose);
     void print_line(void);
 };
 

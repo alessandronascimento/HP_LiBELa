@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Lattice.h"
+#include "MonteCarlo.h"
 
 using namespace std;
 
@@ -31,6 +32,9 @@ int main()
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
 
+    MonteCarlo* MC = new MonteCarlo(Binding_Lattice);
+
+    delete MC;
     delete Binding_Lattice;
     return 0;
 }

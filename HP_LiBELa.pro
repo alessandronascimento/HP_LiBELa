@@ -5,7 +5,14 @@ CONFIG -= qt
 
 SOURCES += \
         trunk/src/Lattice.cpp \
+        trunk/src/MonteCarlo.cpp \
         trunk/src/main.cpp
 
 HEADERS += \
-    trunk/src/Lattice.h
+    trunk/src/Lattice.h \
+    trunk/src/MonteCarlo.h
+
+INCLUDEPATH += ../LiBELa/trunk/lib/gsl/include
+
+LIBS += -L../LiBELa/trunk/lib/gsl/lib/ \
+    -lgsl -lgslcblas -lm
