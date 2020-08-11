@@ -34,7 +34,7 @@ int MonteCarlo::run_MC(double kT){
             }
         }
         step++;
-        if (step % 1000 == 0){
+        if (step % 100000 == 0){
             printf("%10d %10.2f %10.6f\n", step, score, (100.*accepted/step));
         }
     }
