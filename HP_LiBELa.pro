@@ -4,4 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        main.cpp
+        trunk/src/Lattice.cpp \
+        trunk/src/main.cpp
+
+HEADERS += \
+    trunk/src/Lattice.h
