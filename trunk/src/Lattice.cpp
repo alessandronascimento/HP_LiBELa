@@ -2,7 +2,8 @@
 
 Lattice::Lattice()
 {
-
+    this->epsilon = -1.0;
+    this->epsilon_polar = -1.5;
 }
 
 
@@ -37,6 +38,10 @@ void Lattice::create_binding_lattice(void){
     this->lattice[3][3] = 0;
     this->lattice[1][4] = -2;
     this->lattice[4][4] = 2;
+    this->ligand_types.push_back(0);
+    this->ligand_types.push_back(2);
+    this->ligand_types.push_back(-2);
+
 }
 
 void Lattice::print_lattice(void){
@@ -77,58 +82,298 @@ void Lattice::print_lattice(void){
 }
 
 void Lattice::search_lattice(void){
-    int found_poses = 0;
+    double score;
+    vector<Pose> poses_found;
+    vector<int> tmp(2);
 
-    for (unsigned i=1; i<this->lattice.size()-1; i++){
-        for (unsigned j=1; j< this->lattice[i].size()-1; j++){
+    for (int i=1; i<this->lattice.size()-1; i++){
+        for (int j=1; j< this->lattice[i].size()-1; j++){
             if (this->is_empty(i, j)){
                 if (this->is_empty(i, j+1)){
                     if (this->is_empty(i+1, j+1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i, j+1, i+1, j+1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        score = this->score_pair(inv_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                     if (this->is_empty(i-1, j+1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i, j+1, i-1, j+1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                 }
                 if (this->is_empty(i+1, j)){
                     if (this->is_empty(i+1, j+1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i+1, j, i+1, j+1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                     if (this->is_empty(i+1, j-1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i+1, j, i+1, j-1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j-1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j-1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i+1);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                 }
                 if (this->is_empty(i, j-1)){
                     if (this->is_empty(i-1, j-1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i, j-1, i-1, j-1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j-1);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j-1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j-1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j-1);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                     if (this->is_empty(i-1, j+1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i, j-1, i-1, j+1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j-1);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i);
+                        tmp[1] = (j-1);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        score = this->score_pair(inv_pose);printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                 }
                 if (this->is_empty(i-1, j)){
                     if (this->is_empty(i-1, j-1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i-1, j, i-1, j-1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j-1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j-1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        score = this->score_pair(inv_pose);printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
+
                     }
                     if (this->is_empty(i-1, j+1)){
-                        printf("Solution found at [%2d %2d] [%2d %2d] [%2d %2d]\n", i, j, i-1, j, i-1, j+1);
-                        found_poses++;
+                        Pose this_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j);
+                        this_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        this_pose.ijk.push_back(tmp);
+                        poses_found.push_back(this_pose);
+                        this_pose.n=3;
+                        poses_found.push_back(this_pose);
+                        score = this->score_pair(this_pose);
+                        printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                        Pose inv_pose;
+                        tmp[0] = (i);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j+1);
+                        inv_pose.ijk.push_back(tmp);
+                        tmp[0] = (i-1);
+                        tmp[1] = (j);
+                        inv_pose.ijk.push_back(tmp);
+                        poses_found.push_back(inv_pose);
+                        inv_pose.n=3;
+                        poses_found.push_back(inv_pose);
+                        score = this->score_pair(inv_pose);
+                        score = this->score_pair(inv_pose);printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
+                                inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
                     }
                 }
             }
         }
     }
-    printf("Number of solutions found = %d\n", found_poses);
+    printf("Number of poses found: %5d.\n", int(poses_found.size()));
 }
 
-bool Lattice::is_empty(unsigned i, unsigned j){
+bool Lattice::is_empty(int i, int j){
     bool ret;
     if ((this->lattice[i][j] == 0) and (i < this->lattice.size()) and (j < this->lattice[i].size())){
         ret = true;
@@ -137,4 +382,64 @@ bool Lattice::is_empty(unsigned i, unsigned j){
         ret = false;
     }
     return (ret);
+}
+
+bool Lattice::is_occupied(int i, int j){
+    bool ret = false;
+    if ( (i < this->lattice.size()) and (i >= 0) and (j < this->lattice[i].size()) and (j>=0)){
+        if (this->lattice[i][j] != 0){
+            ret = true;
+        }
+    }
+    return (ret);
+}
+
+vector<Lattice::coord> Lattice::find_contacts(int i, int j){
+    vector<coord> coords;
+    for(int l=i-1; l <= i+1; l++){
+        for (int c=j-1; c<=j+1; c++){
+            if (this->is_occupied(l, c)){
+                coord tmp;
+                tmp.x=l;
+                tmp.y=c;
+                coords.push_back(tmp);
+            }
+        }
+    }
+    return (coords);
+}
+
+double Lattice::score_pair(Pose binding_pose){
+    double score=0.0;
+    int type_R, type_L;
+
+    for (unsigned atom=0; atom < binding_pose.ijk.size(); atom++){
+        vector<coord> coords = this->find_contacts(binding_pose.ijk[atom][0], binding_pose.ijk[atom][1]);
+        for (unsigned i=0; i<coords.size(); i++){
+            type_R = this->lattice[coords[i].x][coords[i].y];
+            type_L = this->ligand_types[atom];
+
+            switch (type_R) {
+            case 1:
+                score += epsilon;
+                break;
+            case 2:
+                if (type_L == -2){
+                    score += epsilon_polar;
+                }
+                break;
+            case -2:
+                if (type_L == 2){
+                    score += epsilon_polar;
+                }
+                break;
+            }
+        }
+    }
+    return (score);
+}
+
+
+void Lattice::print_line(void){
+printf("*************************\n");
 }
