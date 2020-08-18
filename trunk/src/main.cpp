@@ -28,13 +28,14 @@ int main()
     Binding_Lattice->print_lattice();
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
-    Binding_Lattice->search_lattice();
-    Binding_Lattice->print_line();
-    Binding_Lattice->print_line();
+    Binding_Lattice->search_lattice2();
+//    Binding_Lattice->print_line();
+//    Binding_Lattice->print_line();
 
-    MonteCarlo* MC = new MonteCarlo(Binding_Lattice);
+//    MonteCarlo* MC = new MonteCarlo(Binding_Lattice);
 
-    delete MC;
+//    delete MC;
     delete Binding_Lattice;
     return 0;
 }
+
