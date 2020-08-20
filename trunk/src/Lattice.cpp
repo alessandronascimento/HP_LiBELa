@@ -104,9 +104,10 @@ void Lattice::print_lattice(void){
     }
 }
 
-void Lattice::search_lattice2(void){
+double Lattice::search_lattice2(double kt){
     double score;
     int m, n;
+    double Q=0.0;
     vector<int> tmp(2);
     for (int i=0; i<this->lattice.size(); i++){
         for (int j=0; j< this->lattice[i].size(); j++){
@@ -136,6 +137,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -152,6 +154,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(inv_pose);
                                 inv_pose.n=3;
                                 score = this->score_pair(inv_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
                                         inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
@@ -177,6 +180,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -197,6 +201,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -219,6 +224,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -239,6 +245,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -266,6 +273,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -282,6 +290,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(inv_pose);
                                 inv_pose.n=3;
                                 score = this->score_pair(inv_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
                                         inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
@@ -304,6 +313,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -324,6 +334,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -346,6 +357,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -366,6 +378,7 @@ void Lattice::search_lattice2(void){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
                                 printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
                                         this_pose.ijk[2][0], this_pose.ijk[2][1], score);
@@ -379,8 +392,11 @@ void Lattice::search_lattice2(void){
     this->print_line();
     this->print_line();
     printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
+//    printf("Q %5.2f %10.5f %5.2f %5.2f\n", (kt/0.001985875), Q, (exp(8/kt)/Q), exp(3/kt)/Q);
     this->print_line();
     this->print_line();
+
+    return  (Q);
 }
 
 bool Lattice::is_triangle(int i, int j, int k, int l, int m, int n){

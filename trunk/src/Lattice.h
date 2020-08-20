@@ -1,7 +1,8 @@
 #ifndef LATTICE_H
 #define LATTICE_H
 
-#include<vector>
+#include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ public:
         int n;
         vector<vector<int> > ijk;
     };
-
+    double kt;
     vector<Pose> ligand_slots;
     vector<double> ligand_energies;
     vector<int> ligand_types;
@@ -31,7 +32,7 @@ public:
     void create_empty_binding_lattice(void);
     void print_lattice(void);
     void search_lattice(void);
-    void search_lattice2(void);
+    double search_lattice2(double kt);
     bool is_empty(int i, int j);
     vector<coord> find_contacts(int i, int j);
     bool is_occupied(int i, int j);
