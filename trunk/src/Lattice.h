@@ -20,13 +20,16 @@ public:
         vector<vector<int> > ijk;
     };
     double kt;
+    bool verbose = false;
     vector<Pose> ligand_slots;
     vector<double> ligand_energies;
     vector<int> ligand_types;
     vector<vector<int> > lattice;
     double epsilon;
     double epsilon_polar;
+    double lowest_energy;
     Lattice();
+    Lattice(double epsilon, double polar, bool _verbose);
     void create_lattice(int m, int n);
     void create_binding_lattice(void);
     void create_empty_binding_lattice(void);

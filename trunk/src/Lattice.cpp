@@ -6,6 +6,13 @@ Lattice::Lattice()
     this->epsilon_polar = -0.3;
 }
 
+Lattice::Lattice(double epsilon, double polar, bool _verbose)
+{
+    this->epsilon = epsilon;
+    this->epsilon_polar = polar;
+    this->verbose = _verbose;
+}
+
 
 void Lattice::create_lattice(int m, int n){
     vector<int> v;
@@ -109,6 +116,7 @@ double Lattice::search_lattice2(double kt){
     int m, n;
     double Q=0.0;
     vector<int> tmp(2);
+    double lowest=0.0;
     for (int i=0; i<this->lattice.size(); i++){
         for (int j=0; j< this->lattice[i].size(); j++){
             if (this->is_empty(i, j)){
@@ -137,10 +145,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                                 Pose inv_pose;
                                 tmp[0] = (i);
                                 tmp[1] = (j);
@@ -154,10 +167,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(inv_pose);
                                 inv_pose.n=3;
                                 score = this->score_pair(inv_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
-                                        inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
 
@@ -180,10 +198,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                             m=k-1;
                             n=l-1;
@@ -201,10 +224,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
                         if (k<i){
@@ -224,10 +252,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                             m=k+1;
                             n=l-1;
@@ -245,10 +278,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
                     }
@@ -273,10 +311,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                                 Pose inv_pose;
                                 tmp[0] = (i);
                                 tmp[1] = (j);
@@ -290,10 +333,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(inv_pose);
                                 inv_pose.n=3;
                                 score = this->score_pair(inv_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", inv_pose.ijk[0][0], inv_pose.ijk[0][1], inv_pose.ijk[1][0], inv_pose.ijk[1][1],
-                                        inv_pose.ijk[2][0], inv_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
                         if (l > j){
@@ -313,10 +361,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                             m=k-1;
                             n=l-1;
@@ -334,10 +387,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
                         if (l < j){
@@ -357,10 +415,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                             m=k-1;
                             n=l+1;
@@ -378,10 +441,15 @@ double Lattice::search_lattice2(double kt){
                                 this->ligand_slots.push_back(this_pose);
                                 this_pose.n=3;
                                 score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
                                 Q += exp(-score/kt);
                                 this->ligand_energies.push_back(score);
-                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
-                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                if (this->verbose){
+                                    printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                            this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                }
                             }
                         }
                     }
@@ -389,13 +457,17 @@ double Lattice::search_lattice2(double kt){
             }
         }
     }
-    this->print_line();
-    this->print_line();
-    printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
-    this->print_line();
-    this->print_line();
+
+    if (this->verbose){
+        this->print_line();
+        this->print_line();
+        printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
+        this->print_line();
+        this->print_line();
+    }
     this->ligand_slots.clear();
     this->ligand_energies.clear();
+    this->lowest_energy = lowest;
     return  (Q);
 }
 
@@ -958,5 +1030,5 @@ double Lattice::score_pair(Pose* binding_pose){
 
 
 void Lattice::print_line(void){
-    printf("*************************\n");
+    printf("**********************************************************************\n");
 }
