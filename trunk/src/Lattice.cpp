@@ -2,8 +2,8 @@
 
 Lattice::Lattice()
 {
-    this->epsilon = -1.0;
-    this->epsilon_polar = -1.5;
+    this->epsilon = -0.2;
+    this->epsilon_polar = -0.3;
 }
 
 
@@ -56,8 +56,8 @@ void Lattice::create_empty_binding_lattice(void){
  * 0 means empyt site.
  */
 
-    for (unsigned i=0; i<m; i++){
-        for (unsigned j=0; j<n; j++){
+    for (int i=0; i<m; i++){
+        for (int j=0; j<n; j++){
             this->lattice[j][i] = 0;
         }
     }
@@ -392,10 +392,10 @@ double Lattice::search_lattice2(double kt){
     this->print_line();
     this->print_line();
     printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
-//    printf("Q %5.2f %10.5f %5.2f %5.2f\n", (kt/0.001985875), Q, (exp(8/kt)/Q), exp(3/kt)/Q);
     this->print_line();
     this->print_line();
-
+    this->ligand_slots.clear();
+    this->ligand_energies.clear();
     return  (Q);
 }
 
