@@ -12,7 +12,7 @@ HEADERS += \
     trunk/src/Lattice.h \
     trunk/src/MonteCarlo.h
 
-INCLUDEPATH += ../LiBELa/trunk/lib/gsl/include
+INCLUDEPATH += ../../LiBELa/trunk/lib/gsl/include
 
-LIBS += -L../LiBELa/trunk/lib/gsl/lib/ \
+LIBS += -L../../LiBELa/trunk/lib/gsl/lib/ \
     -lgsl -lgslcblas -lm
