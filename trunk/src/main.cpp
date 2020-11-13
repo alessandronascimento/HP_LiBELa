@@ -29,13 +29,18 @@ int main(int argc, char **argv)
     vector<double> vlnQ;
     double Q;
     bool verbose = false;
+
+    //! Boltzmann constant in kcal/(mol.K)
     double k=0.001985875;
+
     int c;
+
     double epsilon=1.0, polar_epsilon=1.5;
+
     double ti=25., tf=3000., dt=25. ;
 
     if (argc < 5){
-        printf("Usage: %s -t <ti> -f <tf> -d <dt> -p <polar_epsilon> -e <epsilon>\n", argv[0]);
+        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon>\n", argv[0]);
         exit(1);
     }
 
