@@ -1,11 +1,11 @@
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 #include "Lattice.h"
 #include "MonteCarlo.h"
+#include "Thermo.h"
 
-using namespace std;
+//using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -23,28 +23,21 @@ int main(int argc, char **argv)
     printf("***                                                                ***\n");
     printf("**********************************************************************\n");
 
-    vector<double> vkt;
-    vector<double> vt;
-    vector<double> vQ;
-    vector<double> vlnQ;
-    double Q;
     bool verbose = false;
-
-    //! Boltzmann constant in kcal/(mol.K)
-    double k=0.001985875;
-
     int c;
+    bool mc = false;
+    int mc_steps = 1000000;
 
     double epsilon=1.0, polar_epsilon=1.5;
 
     double ti=25., tf=3000., dt=25. ;
 
     if (argc < 5){
-        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon>\n", argv[0]);
+        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
         exit(1);
     }
 
-    while ((c = getopt (argc, argv, "e:p:i:f:d:v")) != -1)
+    while ((c = getopt (argc, argv, "e:p:i:f:d:m:v")) != -1)
         switch (c)
         {
         case 'i':
@@ -64,6 +57,10 @@ int main(int argc, char **argv)
             break;
         case 'v':
             verbose = true;
+            break;
+        case 'm':
+            mc = true;
+            mc_steps = (atoi(optarg));
             break;
         case '?':
             if (optopt == 'c') {
@@ -104,57 +101,46 @@ int main(int argc, char **argv)
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
 
-    for (double kt=(0.001985875*ti); kt<=(0.001985875*tf); kt+=(0.001985875*dt)){
-        vkt.push_back(kt);
-        vt.push_back(kt/0.001985875);
-        Q = Binding_Lattice->search_lattice2(kt);
-        vQ.push_back(Q);
-        vlnQ.push_back(log(Q));
-    }
-
-    vector<double> dlnQdT;
-    vector<double> U;
-    for (unsigned i=0; i<vlnQ.size()-1; i++){
-        dlnQdT.push_back((vlnQ[i+1]-vlnQ[i])/(vt[i+1]-vt[i]));
-        U.push_back(vkt[i]*vt[i]*dlnQdT[i]);
-    }
-
-    vector<double> dUdT;
-    for (unsigned i=0; i<U.size()-1; i++){
-        dUdT.push_back((U[i+1]-U[i])/(vt[i+1]-vt[i]));
-    }
-
-    printf ("#Thermo: %10.5s %10.5s %10s %10s %10s %10s %10s\n", "T", "ln(Q)", "dlnQ/dT", "U", "S", "F", "CV");
-    for (unsigned i=0; i<vlnQ.size()-1; i++){
-        printf("Thermo: %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f\n", vt[i], vlnQ[i], dlnQdT[i] , (k*vt[i]*vt[i]*dlnQdT[i]), ((k*vlnQ[i])+(vkt[i]*dlnQdT[i])), (-vkt[i]*vlnQ[i]), dUdT[i]);
-    }
-
-    vector<double> vprob_energies;
-    vprob_energies.push_back(-Binding_Lattice->lowest_energy);
-    double dene=abs(Binding_Lattice->lowest_energy/10);
-    for (int i=1; i<10; i++){
-        vprob_energies.push_back(-(Binding_Lattice->lowest_energy+(i*dene)));
-    }
-
-    printf("#Probs: %4s ", "T");
-    for (unsigned i=0; i<10; i++){
-        printf("%4s ", string("p("+to_string(vprob_energies[i])+")").c_str());
-    }
-    printf("%4s \n", "p(0.0)");
-
-    for (unsigned i=0; i<vQ.size()-1; i++){
-        printf("Probs: %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n", vt[i], (exp(vprob_energies[0]/vkt[i])/vQ[i]), (exp(vprob_energies[1]/vkt[i])/vQ[i]), (exp(vprob_energies[2]/vkt[i])/vQ[i]),
-                (exp(vprob_energies[3]/vkt[i])/vQ[i]), (exp(vprob_energies[4]/vkt[i])/vQ[i]), (exp(vprob_energies[5]/vkt[i])/vQ[i]), (exp(vprob_energies[6]/vkt[i])/vQ[i]), (exp(vprob_energies[7]/vkt[i])/vQ[i]),
-                (exp(vprob_energies[8]/vkt[i])/vQ[i]), (exp(vprob_energies[9]/vkt[i])/vQ[i]), (exp(0/vkt[i])/vQ[i]));
-    }
+    Thermo* ThermoData = new Thermo(Binding_Lattice, ti, tf, dt);
 
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
 
-//    MonteCarlo* MC = new MonteCarlo(Binding_Lattice);
-//    delete MC;
+    Lattice* Empty_Lattice = new Lattice(epsilon, polar_epsilon, verbose);
 
+    Empty_Lattice->print_line();
+    Empty_Lattice->print_line();
+
+    Empty_Lattice->create_empty_binding_lattice();
+
+    Empty_Lattice->print_lattice();
+
+    Empty_Lattice->print_line();
+    Empty_Lattice->print_line();
+
+    Thermo* ThermoData2 = new Thermo(Empty_Lattice, ti, tf, dt);
+
+    Empty_Lattice->print_line();
+    Empty_Lattice->print_line();
+
+    double dF, dU, dS;
+    printf("#Binding_Data: %10s %10s %10s %10s %10s\n", "Temp(K)", "dF", "dU", "dS", "-TdS");
+    for (unsigned i=0; i<ThermoData->vlnQ.size()-1; i++){
+        dF = ThermoData->F[i] - ThermoData2->F[i];
+        dU = ThermoData->U[i] - ThermoData2->U[i];
+        dS = ThermoData->S[i] - ThermoData2->S[i];
+        printf("Binding_Data: %10.5f %10.5f %10.5f %10.5f %10.5f\n", ThermoData->vt[i], dF, dU, dS, -ThermoData->vt[i]*dS);
+    }
+
+    if (mc){
+        MonteCarlo* MC = new MonteCarlo(Binding_Lattice, 300.0, mc_steps);
+        delete MC;
+    }
+
+    delete ThermoData;
+    delete ThermoData2;
     delete Binding_Lattice;
+    delete Empty_Lattice;
 
     printf("***                                                                ***\n");
     printf("***                                                                ***\n");

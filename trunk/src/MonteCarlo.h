@@ -2,6 +2,7 @@
 #define MONTECARLO_H
 
 #include "Lattice.h"
+#include <iostream>
 #include <gsl/gsl_rng.h>
 #include <stdlib.h>
 #include <time.h>
@@ -14,11 +15,13 @@ class MonteCarlo
 {
 public:
     gsl_rng * r;
-    MonteCarlo(Lattice* _lattice);
+    MonteCarlo(Lattice* _lattice, double T, int nsteps);
     Lattice* lattice;
+    Lattice::Pose* pose;
 
-    int run_MC(double kT);
-    Lattice::Pose* sample(void);
+    int run_MC(double kT, int nsteps);
+//    Lattice::Pose* sample(void);
+    void sample(void);
     double score_pose(Lattice::Pose* pose);
 };
 

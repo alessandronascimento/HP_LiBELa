@@ -54,7 +54,7 @@ void Lattice::create_binding_lattice(void){
 void Lattice::create_empty_binding_lattice(void){
 
     // create a 8 x 8 lattice
-    int m=3, n=3;
+    int m=8, n=8;
 
     this->create_lattice(m,n);
 
@@ -458,13 +458,14 @@ double Lattice::search_lattice2(double kt){
         }
     }
 
-    if (this->verbose){
+    if (verbose){
         this->print_line();
         this->print_line();
         printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
         this->print_line();
         this->print_line();
     }
+    this->poses_found = int(this->ligand_slots.size());
     this->ligand_slots.clear();
     this->ligand_energies.clear();
     this->lowest_energy = lowest;
@@ -1031,4 +1032,337 @@ double Lattice::score_pair(Pose* binding_pose){
 
 void Lattice::print_line(void){
     printf("**********************************************************************\n");
+}
+
+double Lattice::search_lattice_mc(double kt){
+    double score;
+    int m, n;
+    double Q=0.0;
+    vector<int> tmp(2);
+    double lowest=0.0;
+    for (int i=0; i<this->lattice.size(); i++){
+        for (int j=0; j< this->lattice[i].size(); j++){
+            if (this->is_empty(i, j)){
+
+                // run in line keeping row fixed
+
+                for (int k=i-1; k<= i+1; k++){
+                    int l=j;
+                    if ((this->is_empty(k, l)) and !((i==k) and (j==l)) and this->exists(k, l)){
+
+                        // keeps line fixed while running in rows
+
+                        m = k;
+                        for (int n=j-1; n<=j+1; n++){
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                Pose inv_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                inv_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                inv_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                inv_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(inv_pose);
+                                inv_pose.n=3;
+                                score = this->score_pair(inv_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+
+                        // searching the diagonal
+
+                        if (k>i){
+                            m=k-1;
+                            n=l+1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                            m=k-1;
+                            n=l-1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+                        if (k<i){
+                            m=k+1;
+                            n=l+1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                            m=k+1;
+                            n=l-1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+                    }
+                }
+
+                int k=i;
+                for (int l=j-1; l<=j+1;l++){
+                    if ((this->is_empty(k, l)) and !((i==k) and (j==l)) and this->exists(k, l)){
+                        int n=l;
+                        for (int m=k-1; m<=k+1; m++){
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                                Pose inv_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                inv_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                inv_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                inv_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(inv_pose);
+                                inv_pose.n=3;
+                                score = this->score_pair(inv_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+                        if (l > j){
+                            m=k+1;
+                            n=l-1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                            m=k-1;
+                            n=l-1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+                        if (l < j){
+                            m=k+1;
+                            n=l+1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                            m=k-1;
+                            n=l+1;
+                            if (this->is_empty(m, n) and !((m==i) and (n==j)) and !((m==k) and (n==l))){
+                                Pose this_pose;
+                                tmp[0] = (i);
+                                tmp[1] = (j);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (k);
+                                tmp[1] = (l);
+                                this_pose.ijk.push_back(tmp);
+                                tmp[0] = (m);
+                                tmp[1] = (n);
+                                this_pose.ijk.push_back(tmp);
+                                this->ligand_slots.push_back(this_pose);
+                                this_pose.n=3;
+                                score = this->score_pair(this_pose);
+                                if (score < lowest){
+                                    lowest = score;
+                                }
+                                Q += exp(-score/kt);
+                                this->ligand_energies.push_back(score);
+                                printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose.ijk[0][0], this_pose.ijk[0][1], this_pose.ijk[1][0], this_pose.ijk[1][1],
+                                        this_pose.ijk[2][0], this_pose.ijk[2][1], score);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    this->print_line();
+    this->print_line();
+    printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
+    this->print_line();
+    this->print_line();
+    this->poses_found = int(this->ligand_slots.size());
+    this->lowest_energy = lowest;
+    return  (Q);
 }

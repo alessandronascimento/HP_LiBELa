@@ -28,6 +28,7 @@ public:
     double epsilon;
     double epsilon_polar;
     double lowest_energy;
+    int poses_found;
     Lattice();
     Lattice(double epsilon, double polar, bool _verbose);
     void create_lattice(int m, int n);
@@ -36,6 +37,7 @@ public:
     void print_lattice(void);
     void search_lattice(void);
     double search_lattice2(double kt);
+    double search_lattice_mc(double kt);
     bool is_empty(int i, int j);
     vector<coord> find_contacts(int i, int j);
     bool is_occupied(int i, int j);
