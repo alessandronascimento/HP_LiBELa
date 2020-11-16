@@ -37,6 +37,8 @@ public:
     void print_lattice(void);
     void search_lattice(void);
     double search_lattice2(double kt);
+    double search_lattice3(double this_kt);
+    vector<double> find_lowest(vector<double> v);
     double search_lattice_mc(double kt);
     bool is_empty(int i, int j);
     vector<coord> find_contacts(int i, int j);
@@ -46,6 +48,19 @@ public:
     void print_line(void);
     bool is_triangle(int i, int j, int k, int l, int m, int n);
     bool exists(int i, int j);
+
+    double search_triangle_a(int i, int j);
+    double search_triangle_b(int i, int j);
+    double search_triangle_c(int i, int j);
+    double search_triangle_d(int i, int j);
+    double search_triangle_e(int i, int j);
+    double search_triangle_f(int i, int j);
+    double search_triangle_g(int i, int j);
+    double search_triangle_h(int i, int j);
+    double search_triangle_i(int i, int j);
+    double search_triangle_j(int i, int j);
+    double search_triangle_k(int i, int j);
+    double search_triangle_l(int i, int j);
 };
 
 #endif // LATTICE_H

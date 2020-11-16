@@ -111,6 +111,42 @@ void Lattice::print_lattice(void){
     }
 }
 
+double Lattice::search_lattice3(double this_kt){
+    double Q=0.0;
+    this->kt = this_kt;
+    for (int i=0; i< int(this->lattice.size()); i++){
+        for (int j=0; j<this->lattice[i].size(); j++){
+            if (this->is_empty(i, j)){
+                Q += this->search_triangle_a(i,j);
+                Q += this->search_triangle_b(i,j);
+                Q += this->search_triangle_c(i,j);
+                Q += this->search_triangle_d(i,j);
+                Q += this->search_triangle_e(i,j);
+                Q += this->search_triangle_f(i,j);
+                Q += this->search_triangle_g(i,j);
+                Q += this->search_triangle_h(i,j);
+                Q += this->search_triangle_i(i,j);
+                Q += this->search_triangle_j(i,j);
+                Q += this->search_triangle_k(i,j);
+                Q += this->search_triangle_l(i,j);
+            }
+        }
+    }
+    if (verbose){
+        this->print_line();
+        this->print_line();
+        printf("Number of poses found: %5d.\n", int(this->ligand_slots.size()));
+        this->print_line();
+        this->print_line();
+    }
+    this->poses_found = int(this->ligand_slots.size());
+    vector<double> sorted_energies = this->find_lowest(this->ligand_energies);
+    this->lowest_energy = sorted_energies[0];
+    this->ligand_slots.clear();
+    this->ligand_energies.clear();
+    return  (Q);
+}
+
 double Lattice::search_lattice2(double kt){
     double score;
     int m, n;
@@ -1365,4 +1401,618 @@ double Lattice::search_lattice_mc(double kt){
     this->poses_found = int(this->ligand_slots.size());
     this->lowest_energy = lowest;
     return  (Q);
+}
+
+
+double Lattice::search_triangle_a(int i, int j){
+    int k=i, l=j-1, m=i-1, n=j-1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_b(int i, int j){
+    int k=i-1, l=j-1, m=i-1, n=j;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_c(int i, int j){
+    int k=i-1, l=j, m=i-1, n=j+1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_d(int i, int j){
+    int k=i-1, l=j+1, m=i, n=j+1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_e(int i, int j){
+    int k=i, l=j+1, m=i+1, n=j+1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_f(int i, int j){
+    int k=i+1, l=j+1, m=i+1, n=j;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_g(int i, int j){
+    int k=i+1, l=j, m=i+1, n=j-1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_h(int i, int j){
+    int k=i+1, l=j-1, m=i, n=j-1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_i(int i, int j){
+    int k=i, l=j-1, m=i-1, n=j;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_j(int i, int j){
+    int k=i-1, l=j, m=i, n=j+1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_k(int i, int j){
+    int k=i, l=j+1, m=i+1, n=j;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+double Lattice::search_triangle_l(int i, int j){
+    int k=i+1, l=j, m=i, n=j-1;
+    double Q=0.0;
+    double score=0.0;
+    if (this->is_empty(k, l) and this->is_empty(m, n)){
+        vector<int> tmp(2);
+        Pose this_pose1, this_pose2;
+        //pose abc
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose1.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose1.ijk.push_back(tmp);
+        this_pose1.n=3;
+        score = this->score_pair(this_pose1);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose1.ijk[0][0], this_pose1.ijk[0][1], this_pose1.ijk[1][0], this_pose1.ijk[1][1],
+                    this_pose1.ijk[2][0], this_pose1.ijk[2][1], score);
+        }
+        // pose acb
+        tmp[0] = i;
+        tmp[1] = j;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = m;
+        tmp[1] = n;
+        this_pose2.ijk.push_back(tmp);
+        tmp[0] = k;
+        tmp[1] = l;
+        this_pose2.ijk.push_back(tmp);
+        this_pose2.n=3;
+        score = this->score_pair(this_pose2);
+        this->ligand_energies.push_back(score);
+        Q += exp(-score/kt);
+        if (this->verbose){
+            printf("%2d %2d %2d %2d %2d %2d %8.2f\n", this_pose2.ijk[0][0], this_pose2.ijk[0][1], this_pose2.ijk[1][0], this_pose2.ijk[1][1],
+                    this_pose2.ijk[2][0], this_pose2.ijk[2][1], score);
+        }
+
+        this->ligand_slots.push_back(this_pose1);
+        this->ligand_slots.push_back(this_pose2);
+    }
+    return (Q);
+}
+
+vector<double> Lattice::find_lowest(vector<double> v){
+    double temp;
+    for (unsigned i=0; i< v.size()-1; i++){
+        for (unsigned j=1; j<v.size(); j++){
+            if (v[i] > v[j]){
+                temp = v[j];
+                v[j] = v[i];
+                v[i] = temp;
+            }
+        }
+    }
+    return (v);
 }

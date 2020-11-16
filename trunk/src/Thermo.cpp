@@ -14,7 +14,7 @@ Thermo::Thermo(Lattice* _Binding_Lattice, double _ti, double _tf, double _dt)
     for (double kt=(k*ti); kt<=(k*tf); kt+=(k*dt)){
         vkt.push_back(kt);
         vt.push_back(kt/0.001985875);
-        Q = Binding_Lattice->search_lattice2(kt);
+        Q = Binding_Lattice->search_lattice3(kt);
         vQ.push_back(Q);
         vlnQ.push_back(log(Q));
     }

@@ -95,6 +95,7 @@ int main(int argc, char **argv)
     Binding_Lattice->print_line();
 
     Binding_Lattice->create_binding_lattice();
+//    Binding_Lattice->create_empty_binding_lattice();
 
     Binding_Lattice->print_lattice();
 
