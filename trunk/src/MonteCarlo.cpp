@@ -19,7 +19,6 @@ int MonteCarlo::run_MC(double kT, int nsteps){
     int accepted=0, step=0;
     long double sum_ene = 0.0L ;
     lattice->search_lattice_mc(kT);
-//    vector<int> mc_stats(lattice->poses_found, 0);
     score = lattice->ligand_energies[0];
     printf("MC [ %10s ] %10s %10s %24s\n", "step", "<score>", "%accept", "current configuration");
     lattice->print_line();
@@ -52,15 +51,6 @@ int MonteCarlo::run_MC(double kT, int nsteps){
     }
     return 0;
 }
-
-/*
-Lattice::Pose* MonteCarlo::sample(){
-    Lattice::Pose* pose = new Lattice::Pose;
-    int rnumber = gsl_rng_uniform_int(r, lattice->poses_found);
-    pose = &(lattice->ligand_slots[rnumber]);
-    return (pose);
-}
-*/
 
 void MonteCarlo::sample(void){
     int rnumber = gsl_rng_uniform_int(r, lattice->poses_found);

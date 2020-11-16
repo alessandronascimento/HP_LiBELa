@@ -35,9 +35,7 @@ public:
     void create_binding_lattice(void);
     void create_empty_binding_lattice(void);
     void print_lattice(void);
-    void search_lattice(void);
-    double search_lattice2(double kt);
-    double search_lattice3(double this_kt);
+    double search_lattice(double this_kt);
     vector<double> find_lowest(vector<double> v);
     double search_lattice_mc(double kt);
     bool is_empty(int i, int j);

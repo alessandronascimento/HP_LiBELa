@@ -27,24 +27,28 @@ int main(int argc, char **argv)
     int c;
     bool mc = false;
     int mc_steps = 1000000;
+    bool single_temp = false;
+    double temperature = 300.;
 
     double epsilon=1.0, polar_epsilon=1.5;
 
     double ti=25., tf=3000., dt=25. ;
 
     if (argc < 5){
-        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
+        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon> -t <temperature> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
         exit(1);
     }
 
-    while ((c = getopt (argc, argv, "e:p:i:f:d:m:v")) != -1)
+    while ((c = getopt (argc, argv, "e:p:i:f:d:m:t:v")) != -1)
         switch (c)
         {
         case 'i':
             ti = (atof(optarg));
+            single_temp = false;
             break;
         case 'f':
             tf = (atof(optarg));
+            single_temp = false;
             break;
         case 'd':
             dt = (atof(optarg));
@@ -57,6 +61,10 @@ int main(int argc, char **argv)
             break;
         case 'v':
             verbose = true;
+            break;
+        case 't':
+            temperature = double(atof(optarg));
+            single_temp = true;
             break;
         case 'm':
             mc = true;
@@ -85,6 +93,7 @@ int main(int argc, char **argv)
     printf("*** Ti = %5.3f                                                    ***\n", ti);
     printf("*** Tf = %5.3f                                                  ***\n", tf);
     printf("*** dT = %5.3f                                                    ***\n", dt);
+    printf("*** T  = %5.3f                                                    ***\n", temperature);
     printf("*** <epsilon> = %5.3f                                             ***\n", epsilon);
     printf("*** <epsilon_polar> = %5.3f                                       ***\n", polar_epsilon);
     printf("***                                                                ***\n");
@@ -95,14 +104,21 @@ int main(int argc, char **argv)
     Binding_Lattice->print_line();
 
     Binding_Lattice->create_binding_lattice();
-//    Binding_Lattice->create_empty_binding_lattice();
+    //    Binding_Lattice->create_empty_binding_lattice();
 
     Binding_Lattice->print_lattice();
 
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
 
-    Thermo* ThermoData = new Thermo(Binding_Lattice, ti, tf, dt);
+    Thermo* ThermoData;
+
+    if (single_temp){
+        ThermoData = new Thermo(Binding_Lattice, (0.001985875*temperature));
+    }
+    else {
+        ThermoData = new Thermo(Binding_Lattice, ti, tf, dt);
+    }
 
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
@@ -119,18 +135,39 @@ int main(int argc, char **argv)
     Empty_Lattice->print_line();
     Empty_Lattice->print_line();
 
-    Thermo* ThermoData2 = new Thermo(Empty_Lattice, ti, tf, dt);
+    Thermo* ThermoData2;
+
+    if (single_temp){
+        ThermoData2 = new Thermo(Empty_Lattice, (0.001985875*temperature));
+    }
+    else {
+        ThermoData2 = new Thermo(Empty_Lattice, ti, tf, dt);
+    }
 
     Empty_Lattice->print_line();
     Empty_Lattice->print_line();
 
     double dF, dU, dS;
-    printf("#Binding_Data: %10s %10s %10s %10s %10s\n", "Temp(K)", "dF", "dU", "dS", "-TdS");
-    for (unsigned i=0; i<ThermoData->vlnQ.size()-1; i++){
-        dF = ThermoData->F[i] - ThermoData2->F[i];
-        dU = ThermoData->U[i] - ThermoData2->U[i];
-        dS = ThermoData->S[i] - ThermoData2->S[i];
-        printf("Binding_Data: %10.5f %10.5f %10.5f %10.5f %10.5f\n", ThermoData->vt[i], dF, dU, dS, -ThermoData->vt[i]*dS);
+
+    if (! single_temp){
+        printf("#Binding_Data: %10s %10s %10s %10s %10s\n", "Temp(K)", "dF", "dU", "dS", "-TdS");
+        for (unsigned i=0; i<ThermoData->vlnQ.size()-1; i++){
+            dF = ThermoData->F[i] - ThermoData2->F[i];
+            dU = ThermoData->U[i] - ThermoData2->U[i];
+            dS = ThermoData->S[i] - ThermoData2->S[i];
+            printf("Binding_Data: %10.5f %10.5f %10.5f %10.5f %10.5f\n", ThermoData->vt[i], dF, dU, dS, -ThermoData->vt[i]*dS);
+        }
+        Binding_Lattice->print_line();
+        Binding_Lattice->print_line();
+    }
+    else {
+        printf("#Binding_Data: %10s %10s %10s %10s %10s\n", "Temp(K)", "dF", "dU", "dS", "-TdS");
+        dF = ThermoData->single_F - ThermoData2->single_F;
+        dU = ThermoData->single_U - ThermoData2->single_U;
+        dS = ThermoData->single_S - ThermoData2->single_S;
+        printf("Binding_Data: %10.5f %10.5f %10.5f %10.5f %10.5f\n", temperature, dF, dU, dS, -temperature*dS);
+        Binding_Lattice->print_line();
+        Binding_Lattice->print_line();
     }
 
     if (mc){

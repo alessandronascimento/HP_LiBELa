@@ -20,7 +20,6 @@ public:
     Lattice::Pose* pose;
 
     int run_MC(double kT, int nsteps);
-//    Lattice::Pose* sample(void);
     void sample(void);
     double score_pose(Lattice::Pose* pose);
 };
