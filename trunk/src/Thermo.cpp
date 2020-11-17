@@ -19,7 +19,7 @@ int Thermo::Run_Temp_Scan(void){
     double k=0.001985875;
     double Q;
 
-/* Scanning the partition function Q as a function of the temperature
+    /* Scanning the partition function Q as a function of the temperature
  * Also storing ln (Q) in C++ vectors.
  */
 
@@ -31,7 +31,7 @@ int Thermo::Run_Temp_Scan(void){
         vlnQ.push_back(log(Q));
     }
 
-/*
+    /*
  * Computing d ln(Q) / dT and
  * U = kt^2* [ d ln(Q)/dT ]
  */
@@ -41,7 +41,7 @@ int Thermo::Run_Temp_Scan(void){
         U.push_back(vkt[i]*vt[i]*dlnQdT[i]);
     }
 
-/*
+    /*
  * Computing dU/dT
  */
 
@@ -49,7 +49,7 @@ int Thermo::Run_Temp_Scan(void){
         dUdT.push_back((U[i+1]-U[i])/(vt[i+1]-vt[i]));
     }
 
-/*
+    /*
  * Printing the results:
  * S = (k*lnQ) + (U/T)
  * F = -kT*ln(Q)
@@ -65,7 +65,7 @@ int Thermo::Run_Temp_Scan(void){
         printf("Thermo: %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f\n", vt[i], vlnQ[i], dlnQdT[i] , (U[i]), (S[i]), (F[i]), Cv[i]);
     }
 
-/*
+    /*
  * Printing the probabilities...
  */
 
@@ -111,6 +111,26 @@ int Thermo::Single_Temp(double kt){
 
     printf("#Thermo: %10.5s %10s %10s %10s %10s %10s\n", "T", "ln(Q)", "U", "S", "-TS", "F");
     printf("Thermo: %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f\n", t, lnQ, this->single_U, this->single_S, -t*this->single_S ,this->single_F);
+
+    Binding_Lattice->print_line();
+    printf("*** Probabilities:\n");
+    Binding_Lattice->print_line();
+
+    vprob_energies.push_back(Binding_Lattice->lowest_energy);
+    double dene=abs(Binding_Lattice->lowest_energy/10);
+    for (int i=1; i<10; i++){
+        vprob_energies.push_back((Binding_Lattice->lowest_energy+(i*dene)));
+    }
+
+    printf("#Probs: %4s ", "T");
+    for (unsigned i=0; i<10; i++){
+        printf("%4s ", string("p("+to_string(vprob_energies[i])+")").c_str());
+    }
+    printf("%4s \n", "p(0.0)");
+
+    printf("Probs: %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n", t, (exp(-vprob_energies[0]/kt)/Q), (exp(-vprob_energies[1]/kt)/Q), (exp(-vprob_energies[2]/kt)/Q),
+            (exp(-vprob_energies[3]/kt)/Q), (exp(-vprob_energies[4]/kt)/Q), (exp(-vprob_energies[5]/kt)/Q), (exp(-vprob_energies[6]/kt)/Q), (exp(-vprob_energies[7]/kt)/Q),
+            (exp(-vprob_energies[8]/kt)/Q), (exp(-vprob_energies[9]/kt)/Q), (exp(0/kt)/Q));
 
     return 0;
 
