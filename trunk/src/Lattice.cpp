@@ -43,11 +43,11 @@ void Lattice::create_binding_lattice(void){
         }
     }
     this->lattice[3][3] = 0;
-    this->lattice[1][4] = -2;
-    this->lattice[4][4] = 2;
+    this->lattice[1][4] = -2;//-2;
+    this->lattice[4][4] = 2;//2;
     this->ligand_types.push_back(0);
-    this->ligand_types.push_back(2);
-    this->ligand_types.push_back(-2);
+    this->ligand_types.push_back(2);//2);
+    this->ligand_types.push_back(-2);//-2);
 
 }
 
@@ -109,6 +109,30 @@ void Lattice::print_lattice(void){
         }
         printf("\n");
     }
+}
+
+void Lattice::print_ligand(void){
+    this->print_line();
+    printf("*** Ligand types: \n");
+    for (unsigned i=0; i < this->ligand_types.size(); i++){
+        switch (this->ligand_types[i]) {
+        case 0:
+            printf("%2s ", "*");
+            break;
+        case 2:
+            printf("\033[1;34m");
+            printf("%2s ", "*");
+            printf("\033[0m");
+            break;
+        case -2:
+            printf("\033[0;31m");
+            printf("%2s ", "*");
+            printf("\033[0m");
+            break;
+        }
+    }
+    printf("\n");
+    this->print_line();
 }
 
 double Lattice::search_lattice(double this_kt){

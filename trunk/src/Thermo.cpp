@@ -55,14 +55,15 @@ int Thermo::Run_Temp_Scan(void){
  * F = -kT*ln(Q)
  * Cv = dU/dT
  */
-
-    printf("#Thermo: %10.5s %10.5s %10s %10s %10s %10s %10s\n", "T", "ln(Q)", "dlnQ/dT", "U", "S", "F", "CV");
+    double Boltz_S;
+    printf("#Thermo: %10.5s %10.5s %10s %10s %10s %10s %10s %10s\n", "T", "ln(Q)", "dlnQ/dT", "U", "S", "BoltzS",  "F", "CV");
     for (unsigned i=0; i<vlnQ.size()-1; i++){
         S.push_back((k*vlnQ[i])+(U[i]/vt[i]));
+        Boltz_S = k*log(Binding_Lattice->poses_found);
         minusTS.push_back(((k*vlnQ[i])+(U[i]/vt[i]))*(-vt[i]));
         F.push_back(-vkt[i]*vlnQ[i]);
         Cv.push_back(dUdT[i]);
-        printf("Thermo: %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f\n", vt[i], vlnQ[i], dlnQdT[i] , (U[i]), (S[i]), (F[i]), Cv[i]);
+        printf("Thermo: %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f %10.5f\n", vt[i], vlnQ[i], dlnQdT[i] , (U[i]), (S[i]), Boltz_S, (F[i]), Cv[i]);
     }
 
     /*
@@ -70,7 +71,7 @@ int Thermo::Run_Temp_Scan(void){
  */
 
     Binding_Lattice->print_line();
-    printf("*** Probabilities:                                                 ***\n");
+    printf("*** Probabilities:\n");
     Binding_Lattice->print_line();
 
     vprob_energies.push_back(Binding_Lattice->lowest_energy);
@@ -99,14 +100,16 @@ int Thermo::Single_Temp(double kt){
     double Q = Binding_Lattice->search_lattice_mc(kt);
     double lnQ = log(Q);
 
-    double U=0.0;
+    this->single_U=0.0;
     for (unsigned i=0; i<Binding_Lattice->ligand_energies.size(); i++){
-        U += Binding_Lattice->ligand_energies[i]*exp(-Binding_Lattice->ligand_energies[i]/kt) / Q;
+        this->single_U += Binding_Lattice->ligand_energies[i]*exp(-Binding_Lattice->ligand_energies[i]/kt);
     }
+    this->single_U = this->single_U/Q;
+
     double t = kt/k;
-    this->single_S = k*lnQ + (U/t);
-    this->single_F = -kt*lnQ;
-    this->single_U = U;
+
+    this->single_S = k*lnQ + (this->single_U/t);
+    this->single_F = -kt*lnQ;   
     this->single_minusTS = -t*this->single_S;
 
     printf("#Thermo: %10.5s %10s %10s %10s %10s %10s\n", "T", "ln(Q)", "U", "S", "-TS", "F");
@@ -122,16 +125,11 @@ int Thermo::Single_Temp(double kt){
         vprob_energies.push_back((Binding_Lattice->lowest_energy+(i*dene)));
     }
 
-    printf("#Probs: %4s ", "T");
+    printf("#Probs: %4s %4s\n", "E", "p(E)");
     for (unsigned i=0; i<10; i++){
-        printf("%4s ", string("p("+to_string(vprob_energies[i])+")").c_str());
+        printf("Probs: %4.3f %4.3f\n", vprob_energies[i], (exp(-vprob_energies[i]/kt)/Q));
     }
-    printf("%4s \n", "p(0.0)");
-
-    printf("Probs: %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f %4.3f\n", t, (exp(-vprob_energies[0]/kt)/Q), (exp(-vprob_energies[1]/kt)/Q), (exp(-vprob_energies[2]/kt)/Q),
-            (exp(-vprob_energies[3]/kt)/Q), (exp(-vprob_energies[4]/kt)/Q), (exp(-vprob_energies[5]/kt)/Q), (exp(-vprob_energies[6]/kt)/Q), (exp(-vprob_energies[7]/kt)/Q),
-            (exp(-vprob_energies[8]/kt)/Q), (exp(-vprob_energies[9]/kt)/Q), (exp(0/kt)/Q));
-
+    printf("Probs: %4.3f %4.3f\n", 0.0, (exp(0.0/kt)/Q));
     return 0;
 
 }
