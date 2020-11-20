@@ -29,17 +29,17 @@ int main(int argc, char **argv)
     int mc_steps = 1000000;
     bool single_temp = false;
     double temperature = 300.;
-
-    double epsilon=1.0, polar_epsilon=1.5;
+    double alpha = 3.0;
+    double epsilon=-0.5;
 
     double ti=25., tf=3000., dt=25. ;
 
     if (argc < 5){
-        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -p <polar_epsilon> -e <epsilon> -t <temperature> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
+        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -a <alpha> -e <epsilon> -t <temperature> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
         exit(1);
     }
 
-    while ((c = getopt (argc, argv, "e:p:i:f:d:m:t:v")) != -1)
+    while ((c = getopt (argc, argv, "e:a:i:f:d:m:t:v")) != -1)
         switch (c)
         {
         case 'i':
@@ -53,8 +53,8 @@ int main(int argc, char **argv)
         case 'd':
             dt = (atof(optarg));
             break;
-        case 'p':
-            polar_epsilon = (atof(optarg));
+        case 'a':
+            alpha = (atof(optarg));
             break;
         case 'e':
             epsilon = (atof(optarg));
@@ -88,15 +88,17 @@ int main(int argc, char **argv)
             abort ();
         }
 
-    printf("***                                                                ***\n");
-    printf("*** Parameters:                                                    ***\n");
-    printf("*** Ti = %5.3f                                                    ***\n", ti);
-    printf("*** Tf = %5.3f                                                  ***\n", tf);
-    printf("*** dT = %5.3f                                                    ***\n", dt);
-    printf("*** T  = %5.3f                                                    ***\n", temperature);
-    printf("*** <epsilon> = %5.3f                                             ***\n", epsilon);
-    printf("*** <epsilon_polar> = %5.3f                                       ***\n", polar_epsilon);
-    printf("***                                                                ***\n");
+    double polar_epsilon = alpha*epsilon;
+
+    printf("***\n");
+    printf("*** Parameters:\n");
+    printf("*** Ti = %5.3f\n", ti);
+    printf("*** Tf = %5.3f\n", tf);
+    printf("*** dT = %5.3fß\n", dt);
+    printf("*** T  = %5.3f\n", temperature);
+    printf("*** <epsilon> = %5.3f\n", epsilon);
+    printf("*** <epsilon_polar> = <alpha * epsilon> = %5.3f\n", polar_epsilon);
+    printf("***\n");
 
     Lattice* Binding_Lattice = new Lattice(epsilon, polar_epsilon, verbose);
 
