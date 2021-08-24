@@ -173,7 +173,7 @@ int main(int argc, char **argv)
     }
 
     if (mc){
-        MonteCarlo* MC = new MonteCarlo(Binding_Lattice, 300.0, mc_steps);
+        MonteCarlo* MC = new MonteCarlo(Binding_Lattice, temperature, mc_steps);
         delete MC;
     }
 

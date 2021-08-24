@@ -17,10 +17,11 @@ MonteCarlo::MonteCarlo(Lattice* _lattice, double T, int nsteps)
 int MonteCarlo::run_MC(double kT, int nsteps){
     double score, new_score, p, rnumber;
     int accepted=0, step=0;
+    int is_bound=0;
     long double sum_ene = 0.0L ;
     lattice->search_lattice_mc(kT);
     score = lattice->ligand_energies[0];
-    printf("MC [ %10s ] %10s %10s %24s\n", "step", "<score>", "%accept", "current configuration");
+    printf("MC [ %10s ] %10s %10s %10s %24s\n", "step", "<score>", "%accept", "%bound" , "current configuration");
     lattice->print_line();
     while(accepted < nsteps){
         step++;
@@ -30,6 +31,9 @@ int MonteCarlo::run_MC(double kT, int nsteps){
             score = new_score;
             accepted++;
             sum_ene += score;
+            if (score == lattice->lowest_energy){
+                is_bound++;
+            }
         }
         else {
             p = exp(-(new_score-score)/kT);
@@ -38,13 +42,16 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                 score = new_score;
                 accepted++;
                 sum_ene += score;
+                if (score == lattice->lowest_energy){
+                    is_bound++;
+                }
             }
             else {
                 sum_ene += score;
             }
         }
         if (step % 1000000 == 0){
-            printf("MC [ %10d ] %10.2f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
+            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
                     this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
 
         }
