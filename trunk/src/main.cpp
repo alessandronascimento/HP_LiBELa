@@ -31,15 +31,17 @@ int main(int argc, char **argv)
     double temperature = 300.;
     double alpha = 3.0;
     double epsilon=-0.5;
+    string lattice_file;
+    bool read_file=false;
 
     double ti=25., tf=3000., dt=25. ;
 
     if (argc < 5){
-        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -a <alpha> -e <epsilon> -t <temperature> [ -m <mc_steps> ] [-v ]\n ", argv[0]);
+        printf("Usage: %s -i <initial temperature> -f <final temperature> -d <dT> -a <alpha> -e <epsilon> -t <temperature> [ -m <mc_steps> ] [-l lattice_file ][-v ]\n ", argv[0]);
         exit(1);
     }
 
-    while ((c = getopt (argc, argv, "e:a:i:f:d:m:t:v")) != -1)
+    while ((c = getopt (argc, argv, "e:a:i:f:d:m:t:l:v")) != -1)
         switch (c)
         {
         case 'i':
@@ -69,6 +71,10 @@ int main(int argc, char **argv)
         case 'm':
             mc = true;
             mc_steps = (atoi(optarg));
+            break;
+        case 'l':
+            lattice_file = string(optarg);
+            read_file = true;
             break;
         case '?':
             if (optopt == 'c') {
@@ -105,7 +111,13 @@ int main(int argc, char **argv)
     Binding_Lattice->print_line();
     Binding_Lattice->print_line();
 
-    Binding_Lattice->create_binding_lattice();
+    if (read_file){
+        Binding_Lattice->read_lattice_from_file(lattice_file);
+        Binding_Lattice->create_ligand();
+    }
+    else {
+        Binding_Lattice->create_binding_lattice();
+    }
 
     Binding_Lattice->print_lattice();
     Binding_Lattice->print_ligand();

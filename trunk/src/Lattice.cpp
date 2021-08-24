@@ -51,6 +51,29 @@ void Lattice::create_binding_lattice(void){
 
 }
 
+void Lattice::create_ligand(void){
+    this->ligand_types.push_back(0);
+    this->ligand_types.push_back(2);//2);
+    this->ligand_types.push_back(-2);//-2);
+
+}
+
+void Lattice::read_lattice_from_file(string filename){
+    FILE * lattice_file;
+    lattice_file = fopen(filename.c_str(), "r");
+    int ni,nj, elem;
+    fscanf(lattice_file, "%d %d", &ni, &nj);
+
+    this->create_lattice(ni, nj);
+    printf("Creating a %d x %d lattice...\n", ni, nj);
+    for (unsigned i=0; i<ni; i++){
+        for (unsigned j=0; j<nj; j++){
+            fscanf(lattice_file, "%d", &elem);
+            lattice[i][j] = elem;
+        }
+    }
+}
+
 void Lattice::create_empty_binding_lattice(void){
 
     // create a 8 x 8 lattice

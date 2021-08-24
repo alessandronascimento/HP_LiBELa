@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
+#include <string>
 
 using namespace std;
 
@@ -34,7 +35,9 @@ public:
     Lattice(double epsilon, double polar, bool _verbose);
     void create_lattice(int m, int n);
     void create_binding_lattice(void);
+    void create_ligand(void);
     void create_empty_binding_lattice(void);
+    void read_lattice_from_file(string filename);
     void print_lattice(void);
     void print_ligand(void);
     double search_lattice(double this_kt);
