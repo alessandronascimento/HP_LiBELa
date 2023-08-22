@@ -65,7 +65,7 @@ void MonteCarlo::sample(void){
 }
 
 double MonteCarlo::score_pose(Lattice::Pose* pose){
-    return (lattice->score_pair(pose));
+    return (lattice->score_pair_pointer(pose));
 }
 
 
