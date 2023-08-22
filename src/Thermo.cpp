@@ -148,8 +148,7 @@ BOOST_PYTHON_MODULE(pyThermo)
     ;
 
     class_<Thermo>("Thermo", init<Lattice*, double, double, double >())
-    .def(init<Lattice, double>())
-    .def_readwrite("kt", & Lattice::kt)
+    .def(init<Lattice*, double>())
     .def_readwrite("Binding_Lattice", & Thermo::Binding_Lattice)
     .def_readwrite("ti", & Thermo::ti)
     .def_readwrite("tf", & Thermo::tf)
