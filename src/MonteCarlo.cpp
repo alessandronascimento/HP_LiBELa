@@ -21,7 +21,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
     long double sum_ene = 0.0L ;
     lattice->search_lattice_mc(kT);
     score = lattice->ligand_energies[0];
-    printf("MC [ %10s ] %10s %10s %10s %24s\n", "step", "<score>", "%accept", "%bound" , "current configuration");
+//    printf("MC [ %10s ] %10s %10s %10s %24s\n", "step", "<score>", "%accept", "%bound" , "current configuration");
     lattice->print_line();
     while(accepted < nsteps){
         step++;
@@ -50,10 +50,13 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                 sum_ene += score;
             }
         }
-        if (step % 1000000 == 0){
-            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
-                    this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
-
+        if (step % 10000 == 0){
+            this->steps.push_back(accepted);
+            this->scores.push_back(double(sum_ene/step));
+            this->frac_accept.push_back(100.*accepted/step);
+            this->frac_bound.push_back(100.*is_bound/accepted);
+//            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
+//                    this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
         }
     }
     return 0;
@@ -77,6 +80,14 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE(pyMonteCarlo)
 {
 
+    class_< vector<double> >("vectorDouble")
+    .def(vector_indexing_suite<vector<double> >())
+    ;
+
+    class_< vector<double> >("vectorInt")
+    .def(vector_indexing_suite<vector<int> >())
+    ;
+
     class_<MonteCarlo>("MonteCarlo", init<Lattice*, double, int >())
     .def("run_MC", & MonteCarlo::run_MC)
     .def("sample", & MonteCarlo::sample)
@@ -84,6 +95,9 @@ BOOST_PYTHON_MODULE(pyMonteCarlo)
     .def_readwrite("r", & MonteCarlo::r)
     .def_readwrite("lattice", & MonteCarlo::lattice)
     .def_readwrite("pose", & MonteCarlo::pose)
+    .def_readwrite("steps", & MonteCarlo::steps)
+    .def_readwrite("scores", & MonteCarlo::scores)
+    .def_readwrite("frac_accept", & MonteCarlo::frac_accept)
+    .def_readwrite("frac_bound", & MonteCarlo::frac_bound)
     ;
 }
-
