@@ -44,7 +44,7 @@ pyMonteCarlo.so: MonteCarlo.o Lattice.o
 	
 pyThermo.so : Thermo.o
 	@echo 'Building Thermo dynamic library.'
-	$(CC) -shared Thermo.o -o pyThermo.so $(LD_FLAGS)
+	$(CC) -shared Thermo.o Lattice.o -o pyThermo.so $(LD_FLAGS)
 	@echo ' '
 	
 %.o: ../src/%.cpp
