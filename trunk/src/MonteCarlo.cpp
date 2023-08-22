@@ -68,3 +68,22 @@ double MonteCarlo::score_pose(Lattice::Pose* pose){
     return (lattice->score_pair(pose));
 }
 
+
+#include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+using namespace boost::python;
+
+
+BOOST_PYTHON_MODULE(pyMonteCarlo)
+{
+
+    class_<MonteCarlo>("MonteCarlo", init<Lattice*, double, int >())
+    .def("run_MC", & MonteCarlo::run_MC)
+    .def("sample", & MonteCarlo::sample)
+    .def("score_pose", & MonteCarlo::score_pose)
+    .def_readwrite("r", & MonteCarlo::r)
+    .def_readwrite("lattice", & MonteCarlo::lattice)
+    .def_readwrite("pose", & MonteCarlo::pose)
+    ;
+}
+

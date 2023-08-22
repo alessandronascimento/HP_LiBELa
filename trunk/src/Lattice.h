@@ -47,7 +47,7 @@ public:
     vector<coord> find_contacts(int i, int j);
     bool is_occupied(int i, int j);
     double score_pair(Pose binding_pose);
-    double score_pair(Pose* binding_pose);
+    double score_pair_pointer(Pose* binding_pose);
     void print_line(void);
     bool is_triangle(int i, int j, int k, int l, int m, int n);
     bool exists(int i, int j);

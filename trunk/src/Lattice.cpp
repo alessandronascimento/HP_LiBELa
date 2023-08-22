@@ -317,7 +317,7 @@ double Lattice::score_pair(Pose binding_pose){
     return (score);
 }
 
-double Lattice::score_pair(Pose* binding_pose){
+double Lattice::score_pair_pointer(Pose* binding_pose){
     double score=0.0;
     int type_R, type_L;
 
@@ -968,4 +968,59 @@ vector<double> Lattice::find_lowest(vector<double> v){
         }
     }
     return (v);
+}
+
+
+
+#include <boost/python.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+using namespace boost::python;
+
+
+BOOST_PYTHON_MODULE(pyLattice)
+{
+
+    class_<Lattice>("Lattice", init< >())
+    def(init<double, double, bool>())
+    .def("create_lattice", & Lattice::create_lattice)
+    .def("create_binding_lattice", & Lattice::create_binding_lattice)
+    .def("create_ligand", & Lattice::create_ligand)
+    .def("create_empty_binding_lattice", & Lattice::create_empty_binding_lattice)
+    .def("read_lattice_from_file", & Lattice::read_lattice_from_file)
+    .def("print_lattice", & Lattice::print_lattice)
+    .def("print_ligand", & Lattice::print_ligand)
+    .def("search_lattice", & Lattice::search_lattice)
+    .def("find_lowest", & Lattice::find_lowest)
+    .def("search_lattice_mc", & Lattice::search_lattice_mc)
+    .def("is_empty", & Lattice::is_empty)
+    .def("find_contacts", & Lattice::find_contacts)
+    .def("is_occupied", & Lattice::is_occupied)
+    .def("score_pair", & Lattice::score_pair)
+    .def("score_pair_pointer", & Lattice::score_pair_pointer)
+    .def("print_line", & Lattice::print_line)
+    .def("is_triangle", & Lattice::is_triangle)
+    .def("exists", & Lattice::exists)
+    .def("search_triangle_a", & Lattice::search_triangle_a)
+    .def("search_triangle_b", & Lattice::search_triangle_b)
+    .def("search_triangle_c", & Lattice::search_triangle_c)
+    .def("search_triangle_d", & Lattice::search_triangle_d)
+    .def("search_triangle_e", & Lattice::search_triangle_e)
+    .def("search_triangle_f", & Lattice::search_triangle_f)
+    .def("search_triangle_g", & Lattice::search_triangle_g)
+    .def("search_triangle_h", & Lattice::search_triangle_h)
+    .def("search_triangle_i", & Lattice::search_triangle_i)
+    .def("search_triangle_j", & Lattice::search_triangle_j)
+    .def("search_triangle_k", & Lattice::search_triangle_k)
+    .def("search_triangle_l", & Lattice::search_triangle_l)
+    .def_readwrite("kt", & Lattice::kt)
+    .def_readwrite("verbose", & Lattice::verbose)
+    .def_readwrite("ligand_slots", & Lattice::ligand_slots)
+    .def_readwrite("ligand_energies", & Lattice::ligand_energies)
+    .def_readwrite("ligand_types", & Lattice::ligand_types)
+    .def_readwrite("lattice", & Lattice::lattice)
+    .def_readwrite("epsilon", & Lattice::epsilon)
+    .def_readwrite("epsilon_polar", & Lattice::epsilon_polar)
+    .def_readwrite("lowest_energy", & Lattice::lowest_energy)
+    .def_readwrite("poses_found", & Lattice::poses_found)
+    ;
 }
