@@ -80,10 +80,11 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE(pyMonteCarlo)
 {
 
+/*    
     class_< vector<double> >("vectorDouble")
     .def(vector_indexing_suite<vector<double> >())
     ;
-
+*/
     class_< vector<double> >("vectorInt")
     .def(vector_indexing_suite<vector<int> >())
     ;
