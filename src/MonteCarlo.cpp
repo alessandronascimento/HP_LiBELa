@@ -55,7 +55,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
             this->scores.push_back(double(sum_ene/step));
             this->frac_accept.push_back(100.*accepted/step);
             this->frac_bound.push_back(100.*is_bound/accepted);
-            this->distances.push_back(this->distance(*this->pose, lattice->best_pose);
+            this->distances.push_back(this->distance(this->pose, lattice->best_pose);
 //            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
 //                    this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
         }
@@ -72,11 +72,11 @@ double MonteCarlo::score_pose(Lattice::Pose* pose){
     return (lattice->score_pair_pointer(pose));
 }
 
-double MonteCarlo::distance(Lattice::Pose Pose1, Lattice::Pose Pose2){
+double MonteCarlo::distance(Lattice::Pose* Pose1, Lattice::Pose Pose2){
     double distance=0.0;
-    if (Pose1.ijk.size() == Pose2.ijk.size()){
-        for (unsigned i=0; i< Pose1.ijk.size(); i++){
-            distance += pow(Pose1.ijk[0]-Pose2.ijk[0],2) + pow(Pose1.ijk[1]-Pose2.ijk[1],2);
+    if (Pose1->ijk.size() == Pose2.ijk.size()){
+        for (unsigned i=0; i< Pose1->ijk.size(); i++){
+            distance += pow(Pose1->ijk[0]-Pose2.ijk[0],2) + pow(Pose1->ijk[1]-Pose2.ijk[1],2);
         }
         distance = sqrt(distance);
     }
