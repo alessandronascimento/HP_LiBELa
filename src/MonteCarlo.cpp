@@ -79,6 +79,10 @@ double MonteCarlo::distance(Lattice::Pose Pose1, Lattice::Pose Pose2){
             distance += pow(Pose1.ijk[0]-Pose2.ijk[0],2) + pow(Pose1.ijk[1]-Pose2.ijk[1],2);
         }
         distance = sqrt(distance);
+    }
+    else{
+        distance=10000.0;
+    }
         return(distance);
 }
 
