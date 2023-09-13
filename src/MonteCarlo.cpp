@@ -114,7 +114,7 @@ BOOST_PYTHON_MODULE(pyMonteCarlo)
     .def_readwrite("pose", & MonteCarlo::pose)
     .def_readwrite("steps", & MonteCarlo::steps)
     .def_readwrite("scores", & MonteCarlo::scores)
-    .def_readwrite("distancess", & MonteCarlo::distances)        
+    .def_readwrite("distances", & MonteCarlo::distances)        
     .def_readwrite("frac_accept", & MonteCarlo::frac_accept)
     .def_readwrite("frac_bound", & MonteCarlo::frac_bound)
     ;
