@@ -22,6 +22,7 @@ public:
     vector<double> scores;
     vector<double> frac_accept;
     vector<double> frac_bound;
+    vector<double> distances;
 
     int run_MC(double kT, int nsteps);
     void sample(void);
