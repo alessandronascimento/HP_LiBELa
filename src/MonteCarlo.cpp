@@ -72,7 +72,7 @@ double MonteCarlo::score_pose(Lattice::Pose* pose){
     return (lattice->score_pair_pointer(pose));
 }
 
-double MonteCarlo::distance(Pose Pose1, Pose Pose2){
+double MonteCarlo::distance(Lattice::Pose Pose1, Lattice::Pose Pose2){
     double distance=0.0;
     if (Pose1.ijk.size() == Pose2.ijk.size()){
         for (unsigned i=0; i< Pose1.ijk.size(); i++){
@@ -104,11 +104,13 @@ BOOST_PYTHON_MODULE(pyMonteCarlo)
     .def("run_MC", & MonteCarlo::run_MC)
     .def("sample", & MonteCarlo::sample)
     .def("score_pose", & MonteCarlo::score_pose)
+    .def("distance", & MonteCarlo::distance)
     .def_readwrite("r", & MonteCarlo::r)
     .def_readwrite("lattice", & MonteCarlo::lattice)
     .def_readwrite("pose", & MonteCarlo::pose)
     .def_readwrite("steps", & MonteCarlo::steps)
     .def_readwrite("scores", & MonteCarlo::scores)
+    .def_readwrite("distancess", & MonteCarlo::distances)        
     .def_readwrite("frac_accept", & MonteCarlo::frac_accept)
     .def_readwrite("frac_bound", & MonteCarlo::frac_bound)
     ;
