@@ -55,7 +55,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
             this->scores.push_back(double(sum_ene/step));
             this->frac_accept.push_back(100.*accepted/step);
             this->frac_bound.push_back(100.*is_bound/accepted);
-            this->distances.push_back(this->distance(this->pose, lattice->best_pose);
+            this->distances.push_back(this->distance(&this->pose, lattice->best_pose);
 //            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
 //                    this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
         }
