@@ -13,6 +13,11 @@ Lattice::Lattice(double epsilon, double polar, bool _verbose)
     this->verbose = _verbose;
 }
 
+Lattice::~Lattice(){
+    this->ligand_slots.clear();
+    this->ligand_energies.clear();
+}
+
 
 void Lattice::create_lattice(int m, int n){
     vector<int> v;
@@ -189,8 +194,6 @@ double Lattice::search_lattice(double this_kt){
     this->poses_found = int(this->ligand_slots.size());
     vector<double> sorted_energies = this->find_lowest(this->ligand_energies);
     this->lowest_energy = sorted_energies[0];
-    this->ligand_slots.clear();
-    this->ligand_energies.clear();
     return  (Q);
 }
 
@@ -225,6 +228,11 @@ double Lattice::search_lattice_mc(double this_kt){
     this->poses_found = int(this->ligand_slots.size());
     vector<double> sorted_energies = this->find_lowest(this->ligand_energies);
     this->lowest_energy = sorted_energies[0];
+    for (unsigned i=0; i<this->ligand_energies.size();i++){
+        if (ligand_energies[i] == lowest_energy){
+            this->best_pose = this->ligand_slots[i];
+        }
+    }
     return  (Q);
 }
 
