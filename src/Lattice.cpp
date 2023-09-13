@@ -1042,6 +1042,7 @@ BOOST_PYTHON_MODULE(pyLattice)
     .def_readwrite("epsilon_polar", & Lattice::epsilon_polar)
     .def_readwrite("lowest_energy", & Lattice::lowest_energy)
     .def_readwrite("poses_found", & Lattice::poses_found)
+    .def_readwrite("best_pose", & Lattice::best_pose)
     ;
 
     class_<Lattice::coord>("coord")
