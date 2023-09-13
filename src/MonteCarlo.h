@@ -26,6 +26,7 @@ public:
     int run_MC(double kT, int nsteps);
     void sample(void);
     double score_pose(Lattice::Pose* pose);
+    double distance(Pose Pose1, Pose Pose2);
 };
 
 #endif // MONTECARLO_H
