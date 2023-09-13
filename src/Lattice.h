@@ -34,6 +34,7 @@ public:
     int poses_found;
     Lattice();
     Lattice(double epsilon, double polar, bool _verbose);
+    ~Lattice();
     void create_lattice(int m, int n);
     void create_binding_lattice(void);
     void create_ligand(void);
