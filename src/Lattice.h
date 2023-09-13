@@ -30,6 +30,7 @@ public:
     double epsilon;
     double epsilon_polar;
     double lowest_energy;
+    Pose best_pose;
     int poses_found;
     Lattice();
     Lattice(double epsilon, double polar, bool _verbose);
