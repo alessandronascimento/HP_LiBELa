@@ -33,7 +33,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
             sum_ene += score;
             if (score == lattice->lowest_energy){
                 is_bound++;
-                printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose.ijk[0][0], this->pose.ijk[0][1],this->pose.ijk[1][0], this->pose.ijk[1][1], this->pose.ijk[2][0],this->pose.ijk[2][1]);
+                printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1]);
             }
         }
         else {
@@ -45,7 +45,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                 sum_ene += score;
                 if (score == lattice->lowest_energy){
                     is_bound++;
-                    printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose.ijk[0][0], this->pose.ijk[0][1],this->pose.ijk[1][0], this->pose.ijk[1][1], this->pose.ijk[2][0],this->pose.ijk[2][1])
+                    printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1])
                 }
             }
             else {
