@@ -35,6 +35,13 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                 is_bound++;
                 printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1]);
             }
+            if (step % 10000 == 0){
+                this->steps.push_back(accepted);
+                this->scores.push_back(score);
+                this->frac_accept.push_back(100.*accepted/step);
+                this->frac_bound.push_back(100.*is_bound/accepted);
+                this->distances.push_back(this->distance(this->pose, lattice->best_pose));
+            }
         }
         else {
             p = exp(-(new_score-score)/kT);
@@ -47,19 +54,17 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                     is_bound++;
                     printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1]);
                 }
+                if (step % 10000 == 0){
+                    this->steps.push_back(accepted);
+                    this->scores.push_back(score);
+                    this->frac_accept.push_back(100.*accepted/step);
+                    this->frac_bound.push_back(100.*is_bound/accepted);
+                    this->distances.push_back(this->distance(this->pose, lattice->best_pose));
+                }
             }
             else {
                 sum_ene += score;
             }
-        }
-        if (step % 10000 == 0){
-            this->steps.push_back(accepted);
-            this->scores.push_back(score);
-            this->frac_accept.push_back(100.*accepted/step);
-            this->frac_bound.push_back(100.*is_bound/accepted);
-            this->distances.push_back(this->distance(this->pose, lattice->best_pose));
-//            printf("MC [ %10d ] %10.2f %10.6f %10.6f %3d %3d %3d %3d %3d %3d\n", accepted, double(sum_ene/step), (100.*accepted/step), (100.*is_bound/accepted) , this->pose->ijk[0][0], this->pose->ijk[0][1], this->pose->ijk[1][0],
-//                    this->pose->ijk[1][1], this->pose->ijk[2][0], this->pose->ijk[2][1]);
         }
     }
     return 0;
