@@ -54,7 +54,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
         }
         if (step % 10000 == 0){
             this->steps.push_back(accepted);
-            this->scores.push_back(double(sum_ene/step));
+            this->scores.push_back(score);
             this->frac_accept.push_back(100.*accepted/step);
             this->frac_bound.push_back(100.*is_bound/accepted);
             this->distances.push_back(this->distance(this->pose, lattice->best_pose));
