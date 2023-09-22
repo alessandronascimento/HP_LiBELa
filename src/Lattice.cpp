@@ -233,7 +233,7 @@ double Lattice::search_lattice_mc(double this_kt){
             this->best_pose = this->ligand_slots[i];
         }
     }
-    printf("Best pose found: (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->best_pose[0][0],this->best_pose[0][1],this->best_pose[1][0],this->best_pose[1][1],this->best_pose[2][0],this->best_pose[2][1]);
+    printf("Best pose found: (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->best_pose.ijk[0][0],this->best_pose.ijk[0][1],this->best_pose.ijk[1][0],this->best_pose.ijk[1][1],this->best_pose.ijk[2][0],this->best_pose.ijk[2][1]);
     return  (Q);
 }
 
