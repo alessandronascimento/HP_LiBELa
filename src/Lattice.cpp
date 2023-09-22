@@ -194,6 +194,12 @@ double Lattice::search_lattice(double this_kt){
     this->poses_found = int(this->ligand_slots.size());
     vector<double> sorted_energies = this->find_lowest(this->ligand_energies);
     this->lowest_energy = sorted_energies[0];
+    for (unsigned i=0; i<this->ligand_energies.size();i++){
+        if (ligand_energies[i] == lowest_energy){
+            this->best_pose = this->ligand_slots[i];
+        }
+    }
+    printf("Best pose found: (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->best_pose.ijk[0][0],this->best_pose.ijk[0][1],this->best_pose.ijk[1][0],this->best_pose.ijk[1][1],this->best_pose.ijk[2][0],this->best_pose.ijk[2][1]);
     return  (Q);
 }
 
