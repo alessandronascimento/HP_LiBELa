@@ -35,7 +35,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                 is_bound++;
                 printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1]);
             }
-            if (step % 10000 == 0){
+            if (step % 1000 == 0){
                 this->steps.push_back(accepted);
                 this->scores.push_back(score);
                 this->frac_accept.push_back(100.*accepted/step);
@@ -54,7 +54,7 @@ int MonteCarlo::run_MC(double kT, int nsteps){
                     is_bound++;
                     printf("Binding site detected at (%2d,%2d),(%2d,%2d),(%2d,%2d)\n", this->pose->ijk[0][0], this->pose->ijk[0][1],this->pose->ijk[1][0], this->pose->ijk[1][1], this->pose->ijk[2][0],this->pose->ijk[2][1]);
                 }
-                if (step % 10000 == 0){
+                if (step % 1000 == 0){
                     this->steps.push_back(accepted);
                     this->scores.push_back(score);
                     this->frac_accept.push_back(100.*accepted/step);
